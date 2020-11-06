@@ -18,17 +18,18 @@ import javax.persistence.Table;
 @Table(name = "booksauthors")
 public class BookAuthor implements Serializable{
    
+    @Id
+    @GeneratedValue
     @JoinColumn(name="seq_no")
     private Integer seq_No;
     
-    @Id
-    @GeneratedValue
+    
     @ManyToOne
     @JoinColumn(name="isbn")
     private Books livro;    
         
-    @Id
-    @GeneratedValue
+    
+   
     @ManyToOne
     @JoinColumn(name="author_id")
     private Authors autor_id;

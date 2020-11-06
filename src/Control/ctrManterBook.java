@@ -28,7 +28,7 @@ public class ctrManterBook {
     }
     public List carregarLivros() {
         try{
-            return acessoHibernateLivros.carregarTudoOrdenado(Books.class, "name");
+            return acessoHibernateLivros.carregarTudoOrdenado(Books.class, "isbn");
         }catch (HibernateException e){
             return null;
         }

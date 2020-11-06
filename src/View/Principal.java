@@ -9,6 +9,7 @@ import Control.CtrManterAuthors;
 import Control.CtrManterPublisher;
 import Control.ctrManterBook;
 import Model.Authors;
+//import Model.BookAuthor;
 import Model.Books;
 import Model.Publishers;
 import dao.HibernateConfiguracao;
@@ -35,6 +36,8 @@ public class Principal extends javax.swing.JFrame {
     private Publishers editora;
     private final Color fundoCinza = new Color(35,35,35);
     private final Color corBotoes = new Color(34,55,102);
+    private Books book;
+//    private BookAuthor bookAuthor;
     /**
      * Creates new form Principal
      */
@@ -62,6 +65,7 @@ public class Principal extends javax.swing.JFrame {
         
         this.popularTabelaEditoras(listaEditora);
         this.popularTabelaAutores(listaAuthors);
+        this.popularTabelaBooks(listaBooks);
     }
 
     private void popularTabelaEditoras(List<Publishers> pListaDeEditora){
@@ -83,7 +87,60 @@ public class Principal extends javax.swing.JFrame {
                 }
             );
         }
-    }    
+    } 
+    
+    private void popularTabelaBooksComBusca(List<Books> listaBooks){
+        String titulo=jTextFieldTituloLivro.getText();
+        String isbn=jTextFieldIsbn.getText();
+        
+        DefaultTableModel modeloLivros = new DefaultTableModel(new Object[] {
+            "Titulo", "Isbn", "Editora", "Preço" }, 0) {
+            public boolean isCellEditable(int rowIndex, int mColIndex){  
+            return false;  
+            }
+        };        
+        jTableLivros.setModel(modeloLivros);
+        
+
+        for(Books books: listaBooks){
+            if(books.getTitulo().toUpperCase().contains(titulo.toUpperCase())){
+                if(books.getIsbn().toUpperCase().contains(isbn.toUpperCase())){
+                    modeloLivros.addRow(
+                        new Object[]{
+                            books.getTitulo(),
+                            books.getIsbn(),
+                            books.getEditora(),
+                            books.getPreco()
+                        }
+                    );                    
+                }                
+            }
+
+        }
+    }
+    
+    private void popularTabelaBooks(List<Books> listaBooks) {
+        DefaultTableModel modeloBooks = new DefaultTableModel(new Object[] {
+            "Titulo", "Isbn", "Editora", "Preço" }, 0) {
+            public boolean isCellEditable(int rowIndex, int mColIndex){  
+            return false;  
+            }
+        }; 
+        jTableLivros.setModel(modeloBooks);
+        
+        for(Books books: listaBooks){
+            modeloBooks.addRow(
+            new Object[]{        
+             books.getTitulo(),
+             books.getIsbn(),
+             books.getEditora(),
+             books.getPreco()
+            });
+        }
+    }
+    
+    
+    
     
     
     private void popularTabelaAutores(List<Authors> pListaDeAuthors){
@@ -194,14 +251,14 @@ public class Principal extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         jPanelGerLivros = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTableLivros = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jTextFieldAddEditora = new javax.swing.JTextField();
         jTextFieldTituloLivro = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
+        jTextFieldPrice = new javax.swing.JTextField();
         jTextFielAddAutor = new javax.swing.JTextField();
         jButtonbuscarLivro = new javax.swing.JButton();
         jButtonIncluirLivro = new javax.swing.JButton();
@@ -209,7 +266,9 @@ public class Principal extends javax.swing.JFrame {
         jButtonExclluirLivro = new javax.swing.JButton();
         jLabel18 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        jTextFieldSeqNo = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        jTextFieldIsbn = new javax.swing.JTextField();
         jPanelGerEditora = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTableEditora = new javax.swing.JTable();
@@ -377,7 +436,7 @@ public class Principal extends javax.swing.JFrame {
 
         getContentPane().add(jPanelMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 180, 540));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTableLivros.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -385,7 +444,7 @@ public class Principal extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Titulo", "Isbn", "Autor", "Editora"
+                "Titulo", "Isbn", "Editora", "Preço"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -396,12 +455,12 @@ public class Principal extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setResizable(false);
-            jTable1.getColumnModel().getColumn(1).setResizable(false);
-            jTable1.getColumnModel().getColumn(2).setResizable(false);
-            jTable1.getColumnModel().getColumn(3).setResizable(false);
+        jScrollPane1.setViewportView(jTableLivros);
+        if (jTableLivros.getColumnModel().getColumnCount() > 0) {
+            jTableLivros.getColumnModel().getColumn(0).setResizable(false);
+            jTableLivros.getColumnModel().getColumn(1).setResizable(false);
+            jTableLivros.getColumnModel().getColumn(2).setResizable(false);
+            jTableLivros.getColumnModel().getColumn(3).setResizable(false);
         }
 
         jLabel4.setText("Editora:");
@@ -430,6 +489,11 @@ public class Principal extends javax.swing.JFrame {
         });
 
         jButtonbuscarLivro.setText("Buscar");
+        jButtonbuscarLivro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonbuscarLivroActionPerformed(evt);
+            }
+        });
 
         jButtonIncluirLivro.setText("Incluir");
         jButtonIncluirLivro.addActionListener(new java.awt.event.ActionListener() {
@@ -442,12 +506,19 @@ public class Principal extends javax.swing.JFrame {
         jButtonEditarLivro.setEnabled(false);
 
         jButtonExclluirLivro.setText("Excluir");
+        jButtonExclluirLivro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonExclluirLivroActionPerformed(evt);
+            }
+        });
 
         jLabel18.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel18.setText("GERENCIAR LIVROS");
 
         jLabel11.setText("Seq. N:");
+
+        jLabel8.setText("Preço:");
 
         javax.swing.GroupLayout jPanelGerLivrosLayout = new javax.swing.GroupLayout(jPanelGerLivros);
         jPanelGerLivros.setLayout(jPanelGerLivrosLayout);
@@ -463,15 +534,19 @@ public class Principal extends javax.swing.JFrame {
                                 .addGroup(jPanelGerLivrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel6)
                                     .addComponent(jLabel5))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanelGerLivrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jTextFieldTituloLivro, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanelGerLivrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanelGerLivrosLayout.createSequentialGroup()
-                                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jTextFieldIsbn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
+                                        .addComponent(jLabel8)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jTextFieldPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jLabel11)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jTextField1)))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jTextFieldSeqNo, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jTextFieldTituloLivro, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanelGerLivrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel4)
@@ -512,14 +587,15 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(jLabel7)
                     .addComponent(jTextFielAddAutor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanelGerLivrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel11)
-                    .addGroup(jPanelGerLivrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel6)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel4)
-                        .addComponent(jTextFieldAddEditora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanelGerLivrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel4)
+                    .addComponent(jTextFieldAddEditora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldSeqNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8)
+                    .addComponent(jTextFieldPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldIsbn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11))
                 .addGap(33, 33, 33))
         );
 
@@ -947,16 +1023,38 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonBuscarPublishersActionPerformed
 
     private void jButtonIncluirLivroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIncluirLivroActionPerformed
-        System.out.println(" autor classe"+this.authors.getAuthor_id());
+        
+        System.out.println(" editora classe"+this.editora.getPublisher_id());
+        book = new Books();
+//        bookAuthor = new BookAuthor();
+        
+        book.setTitulo(jTextFieldTituloLivro.getText());
+        book.setIsbn(jTextFieldIsbn.getText());
+        book.setPreco(Float.parseFloat(jTextFieldPrice.getText()));
+//        bookAuthor.setSeq_No(Integer.parseInt(jTextFieldSeqNo.getText()));
+        
+        if(ctrManterEditora.gravarEditora(editora)==1){
+            JOptionPane.showMessageDialog(null, "Editora incuida");
+        }else{
+            JOptionPane.showMessageDialog(null, "Erro ao incuir editora");
+        }
+        
+        
+
+        List<Publishers> listaEditoras = new ArrayList();
+        
+        listaEditoras=ctrManterEditora.carregarEditora();
+        
+        this.popularTabelaEditoras(listaEditoras);
     }//GEN-LAST:event_jButtonIncluirLivroActionPerformed
 
     private void jTextFielAddAutorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFielAddAutorMouseClicked
+        
         telaAutor = new OpenAuthor();
         telaAutor.setDefaultCloseOperation(HIDE_ON_CLOSE );
         telaAutor.setVisible(true);
         telaAutor.setLocationRelativeTo(this);
         telaAutor.telaPrincipal(this);
-
     }//GEN-LAST:event_jTextFielAddAutorMouseClicked
 
     private void jTextFieldAddEditoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldAddEditoraActionPerformed
@@ -1001,6 +1099,30 @@ public class Principal extends javax.swing.JFrame {
         jPanelGerEditora.setVisible(false);
         jPanelGerAutores.setVisible(false);
     }//GEN-LAST:event_jLabel1MouseClicked
+
+    private void jButtonbuscarLivroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonbuscarLivroActionPerformed
+        List<Books> listaBooks = new ArrayList();
+        listaBooks = ctrManterBooks.carregarLivros();
+        popularTabelaBooksComBusca(listaBooks);
+    }//GEN-LAST:event_jButtonbuscarLivroActionPerformed
+
+    private void jButtonExclluirLivroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExclluirLivroActionPerformed
+        DefaultTableModel modeloTabelaBooks = (DefaultTableModel) this.jTableLivros.getModel();
+        int linha = this.jTableLivros.getSelectedRow();
+        String isbn = String.valueOf(modeloTabelaBooks.getValueAt(linha, 1));
+       
+
+        book = new Books();
+        book.setIsbn(isbn);
+
+        boolean resultado = ctrManterBooks.excluirLivros(book);
+        if(resultado == true){
+            modeloTabelaBooks.removeRow(linha);
+            JOptionPane.showMessageDialog(this, "Livro removido com sucesso");
+        }else{
+            JOptionPane.showMessageDialog(this, "Erro ao excluir livro");
+        }
+    }//GEN-LAST:event_jButtonExclluirLivroActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1066,6 +1188,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanelGerAutores;
     private javax.swing.JPanel jPanelGerEditora;
@@ -1077,17 +1200,20 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTableAutores;
     private javax.swing.JTable jTableEditora;
+    private javax.swing.JTable jTableLivros;
     private javax.swing.JTextField jTextFielAddAutor;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextFieldAddEditora;
     private javax.swing.JTextField jTextFieldAuthorsFname;
     private javax.swing.JTextField jTextFieldAuthorsName;
+    private javax.swing.JTextField jTextFieldIsbn;
     private javax.swing.JTextField jTextFieldNomeEditora;
+    private javax.swing.JTextField jTextFieldPrice;
+    private javax.swing.JTextField jTextFieldSeqNo;
     private javax.swing.JTextField jTextFieldTituloLivro;
     private javax.swing.JTextField jTextFieldUrlEditora;
     // End of variables declaration//GEN-END:variables
+
+
 }

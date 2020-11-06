@@ -13,20 +13,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "books")
 public class Books implements Serializable {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="isbn")
     private String isbn;
         
-    @Column(name="Title")
+    @Column(name="title")
     private String titulo;
     
     @Column(name="price")
@@ -67,6 +66,11 @@ public class Books implements Serializable {
 
     public void setPreco(Float preco) {
         this.preco = preco;
+    }
+    
+        @Override
+    public String toString() {
+    return this.getIsbn();
     }
     
 }
